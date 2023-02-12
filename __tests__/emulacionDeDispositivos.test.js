@@ -19,7 +19,15 @@ describe('Emulando dispositivos', () => {
             defaultViewport: null
 		});
 
-		page = await browser.newPage();
+		//page = await browser.newPage();
+
+        // Modo incognito
+        //const context = await browser.createIncognitoBrowserContext();
+        //page = await context.newPage();
+
+        // Modo incognito 2 la mejor
+        page = await (await browser.createIncognitoBrowserContext()).newPage();
+
         await page.goto('https://www.platzi.com', {waitUntil: 'networkidle0'});
     })
 
