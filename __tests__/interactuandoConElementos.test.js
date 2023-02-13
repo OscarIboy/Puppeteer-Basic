@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const {click, type, doubleClick} = require('../lib/helpers');
 
 describe('Interactuando con elementos', () => {
 	it('Debe abrir y cerrar el navegador', async () => {
@@ -26,17 +27,30 @@ describe('Interactuando con elementos', () => {
         await page.click('.context-menu-one');
 
         //Doble click
-        await page.click('#authentication > button:nth-child(25)',{clickCount: 2, delay: 500});
+        //await page.click('#authentication > button',{clickCount: 2, delay: 500});
+
+        //Doble click with helpers
+        await doubleClick(page, '#authentication > button')
 
         //Textbox
+        //await page.goto('https://devexpress.github.io/testcafe/example');
+        //await page.type('#developer-name', 'oscar', {delay: 100});
+
+        //Textbox whit helpers
         await page.goto('https://devexpress.github.io/testcafe/example');
-        await page.type('#developer-name', 'oscar', {delay: 100});
+        await type(page, '#developer-name', 'oscar', {delay: 100});
         
         //Checkbox
-        await page.click('#remote-testing');
-        await page.click('#tried-test-cafe');
-        await page.type('#comments', 'Esto es un comentario');
-        await page.click('#submit-button');
+        //await page.click('#remote-testing');
+        //await page.click('#tried-test-cafe');
+        //await page.type('#comments', 'Esto es un comentario');
+        //await page.click('#submit-button');
+
+        //Checkbox whit helpers
+        await click(page, '#remote-testing');
+        await click(page, '#tried-test-cafe');
+        await type(page, '#comments', 'Esto es un comentario');
+        await click(page, '#submit-button');
 
         await page.waitForTimeout(3000);
         await browser.close();
