@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --forceExit --detectOpenHandles",
-    "test-emulacion-de-dispositivos": "jest --forceExit --detectOpenHandles __tests__/emulacionDeDispositivos.test.js"
+    "test-emulacion-de-dispositivos": "jest --forceExit --detectOpenHandles __tests__/emulacionDeDispositivos.test.js",
+    "visual-test": "jest --updateSnapshot --forceExit --detectOpenHandles __tests__/visual.test.js"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +16,7 @@
     "puppeteer": "^19.6.3"
   },
   "devDependencies": {
+    "jest-image-snapshot": "^6.1.0",
     "prettier": "^2.8.3"
   }
 }
