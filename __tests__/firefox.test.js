@@ -1,0 +1,85 @@
+const puppeteer = require('puppeteer');
+
+const {getText, getCount} = require('../lib/helpers');
+
+describe('Extrayendo informacion', () => {
+
+    let browser;
+    let page;
+
+    //beforeEach and beforeAll
+    beforeEach(async() =>{
+        browser = await puppeteer.launch({
+			headless: true,
+            // Test with firefox
+            product: 'firefox',
+            defaultViewport: null
+		});
+
+		page = await browser.newPage();
+    })
+
+    //afterEach and afterAll
+    afterEach(async ()=>{
+		await browser.close();
+    });
+
+	it('Extraer el titulo de la pagina y la url', async () => {
+
+        //Navegacion "Esperar a que la pagina termine de cargar"
+		await page.goto('https://www.platzi.com', {waitUntil: 'networkidle0'});
+
+        //Capturar el titulo de la pagina y el url
+        const titulo = await page.title();
+        const url = await page.url();
+
+        console.log('titulo', titulo);
+        console.log('url', url);
+	}, 30000);
+
+    it('Extraer la informacion de un elemento', async () => {
+		
+        //Navegacion "Esperar a que la pagina termine de cargar"
+		await page.goto('https://www.platzi.com', {waitUntil: 'networkidle0'});
+
+        //Extraer el texto de un elemento con css selector
+        await page.waitForSelector('.Actionsv2-enterprise');
+        const nombreBoton = await page.$eval('.Actionsv2-enterprise', (button) => button.textContent);
+        console.log('nombre Boton', nombreBoton);
+
+        //Extraer el texto de un elemento con xpath
+        const [button] = await page.$x('//*[@id="Header-v2"]/nav/div[1]/div/a/div/figure[1]/img');
+        const propiedad = await button.getProperty('textContent');
+        const texto = await propiedad.jsonValue();
+        console.log('Texto', texto);
+
+        //Extraer texto con xpath 2
+        const [button2] = await page.$x('//*[@id="Header-v2"]/nav/div[1]/div/a/div/figure[1]/img');
+        const texto2 = await page.evaluate((name) => name.textContent, button2);
+        console.log('Texto 2', texto2);
+
+        //Extraer texto con xpath 3 La mejor
+        const button3 = await page.waitForXPath('//*[@id="Header-v2"]/nav/div[5]/div/a');
+        const texto3 = await page.evaluate((name) => name.textContent, button3);
+        console.log('Texto 3', texto3);
+
+        //Usando helpers
+        await page.waitForSelector('.Actionsv2-enterprise');
+        const nombreBoton4 = await getText(page, '.Actionsv2-enterprise');
+        console.log('nombreBoton4', nombreBoton4);
+	}, 30000);
+
+    it('Contar los elementos de una pagina', async () => {
+
+        //Navegacion "Esperar a que la pagina termine de cargar"
+		await page.goto('https://www.platzi.com', {waitUntil: 'networkidle0'});
+
+        //$$eval regresa todos los elementos que detecte con el selector
+        const images = await page.$$eval('img',(imagenes)=>imagenes.length);
+        console.log('Imagenes', images);
+
+        //Usando helpers
+        const images2 = await getCount(page, 'img');
+        console.log('Imagenes2', images2);
+	}, 30000);
+});
