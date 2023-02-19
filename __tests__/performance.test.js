@@ -77,4 +77,35 @@ describe('Performance', () => {
         })
 
 	}, 30000);
+
+    test('Medir el performance del first paint y first contentful paint', async () => {
+
+        const navigationPromise = page.waitForNavigation();
+        await page.goto('https://www.platzi.com/');
+        await navigationPromise
+
+        const firstPaint = JSON.parse(
+            await page.evaluate(()=> JSON.stringify(performance.getEntriesByName('first-paint')))
+        )
+
+        const firstContentfulPaint = JSON.parse(
+            await page.evaluate(()=> JSON.stringify(performance.getEntriesByName('first-contentful-paint')))
+        )
+
+        console.log('firstPaint', firstPaint[0].startTime);
+        console.log('firstContentfulPaint', firstContentfulPaint[0].startTime);
+
+	}, 30000);
+
+    test('Medir el performance delos frames for segundo', async () => {
+
+        const devtoolsProtocolClient = await page.target().createCDPSession();
+        
+        await devtoolsProtocolClient.send('Overlay.setShowFPSCounter', {show: true});
+        await page.goto('https://www.platzi.com/');
+
+        await page.screenshot({path: 'framesPorSegundo.png', type: 'png'});
+
+
+	}, 30000);
 });
